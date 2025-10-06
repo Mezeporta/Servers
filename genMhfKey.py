@@ -62,12 +62,12 @@ for r, _, f in os.walk('mhfdat', topdown=False):
             continue
         files.add(MhfFile(fn, fs))
 
-
-with Pool() as pool:
+if __name__ == "__main__": # Just a little fix that makes the code works under Windows operation system.
+    with Pool() as pool:
     infos = pool.map(fileinfo, files)
     for crc, filetime, filename, size in infos:
         dfn = filename.replace('/', '\\')[7:]
         key.add(f'{crc},{filetime[4:8].hex().upper()},{filetime[0:4].hex().upper()},{dfn},{size},0\n')
-
+    
 with open(f'key{target}.txt', 'w') as fp:
     fp.write(''.join(key))
